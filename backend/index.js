@@ -1,44 +1,53 @@
 const express = require("express");
 const cors = require("cors");
+const dotenv = require("dotenv");
+const { OpenAI } = require("openai");
+
+dotenv.config();
 
 const app = express();
-const PORT = 5000;
-
-// Middleware
 app.use(cors());
 app.use(express.json());
+
+// OpenAI client
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Health check
 app.get("/", (req, res) => {
   res.send("Gap2Hire AI Backend Running");
 });
 
-// Resume / Interview Analysis API
-app.post("/analyze", (req, res) => {
-  const { text } = req.body;
+// Analyze resume
+app.post("/analyze", async (req, res) => {
+  try {
+    const { text } = req.body;
 
-  // Mock AI-style response (perfect for hackathon demo)
-  const response = {
-    strengths: [
-      "Strong AWS fundamentals",
-      "Hands-on Docker knowledge",
-      "Good understanding of MERN stack"
-    ],
-    gaps: [
-      "Deployment steps are not clearly explained",
-      "System design depth needs improvement"
-    ],
-    suggestions: [
-      "Explain CI/CD pipeline usage",
-      "Mention scalability strategies like load balancers and caching",
-      "Add cloud deployment experience"
-    ]
-  };
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an AI interview coach. Analyze resumes and return strengths, skill gaps, and suggestions.",
+        },
+        {
+          role: "user",
+          content: text,
+        },
+      ],
+    });
 
-  res.json(response);
+    res.json({
+      result: completion.choices[0].message.content,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "AI analysis failed" });
+  }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Backend running on http://localhost:${PORT}`);
+app.listen(5000, () => {
+  console.log("Backend running on port 5000");
 });
