@@ -3,7 +3,7 @@
 ## Color Palette
 - Black: Primary background
 - White: Text and content cards
-- Red: CTA buttons, highlights, skill gaps
+- green: CTA buttons, highlights, skill gaps
 
 ## Design Style
 - Minimal
