@@ -2,29 +2,39 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
 
+// Test route
 app.get("/", (req, res) => {
-  res.send("Gap2Hire AI Backend Running");
+  res.send("Gap2Hire Backend Running");
 });
 
-app.post("/analyze-resume", (req, res) => {
-  res.json({
-    matchScore: 72,
-    missingSkills: ["AWS", "Docker"],
-    resumeFeedback: [
-      "Projects lack deployment details",
-      "Cloud skills not mentioned"
+// Resume / Interview analysis API
+app.post("/analyze", (req, res) => {
+  const { text } = req.body;
+
+  // Dummy AI response (for hackathon demo)
+  const response = {
+    strengths: [
+      "Good knowledge in AWS",
+      "Hands-on Docker experience"
     ],
-    interviewQuestions: [
-      "How would you deploy a MERN app on AWS?",
-      "What problem does Docker solve?"
+    gaps: [
+      "Deployment details missing",
+      "System design explanation needed"
+    ],
+    suggestions: [
+      "Add AWS project deployment steps",
+      "Mention scalability approaches"
     ]
-  });
+  };
+
+  res.json(response);
 });
 
-app.listen(5000, () => {
-  console.log("Backend running on port 5000");
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });

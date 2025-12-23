@@ -1,30 +1,64 @@
+import { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const analyzeResume = async () => {
+    setLoading(true);
+
+    const response = await fetch("http://localhost:5000/analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text: "Sample resume text"
+      })
+    });
+
+    const data = await response.json();
+    setResult(data);
+    setLoading(false);
+  };
+
   return (
-    <div className="container">
+    <div className="app">
       <h1 className="title">Gap2Hire</h1>
       <p className="tagline">From Skill Gaps to Get Hired</p>
 
       <div className="card">
-        <h2 className="section-title">Interview Practice</h2>
+        <h2>Interview Practice</h2>
 
-        <div className="section">
-          <span className="skill-tag">AWS</span>
-          <p>How would you deploy a MERN application on AWS?</p>
-        </div>
+        <button onClick={analyzeResume} disabled={loading}>
+          {loading ? "Analyzing..." : "Analyze Resume"}
+        </button>
 
-        <div className="section">
-          <span className="skill-tag">Docker</span>
-          <p>What problem does Docker solve in application deployment?</p>
-        </div>
+        {result && (
+          <div className="result">
+            <h3>✅ Strengths</h3>
+            <ul>
+              {result.strengths.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
 
-        <div className="section">
-          <span className="skill-tag">System Design</span>
-          <p>How would you scale a web application for a large number of users?</p>
-        </div>
+            <h3>⚠ Skill Gaps</h3>
+            <ul>
+              {result.gaps.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
 
-        <button>Back to Analysis</button>
+            <h3>🚀 Suggestions</h3>
+            <ul>
+              {result.suggestions.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
