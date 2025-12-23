@@ -1,51 +1,39 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
-const { OpenAI } = require("openai");
-
-dotenv.config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// OpenAI client
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-// Health check
+// TEST ROUTE
 app.get("/", (req, res) => {
-  res.send("Gap2Hire AI Backend Running");
+  res.send("Gap2Hire Backend Running");
 });
 
-// Analyze resume
-app.post("/analyze", async (req, res) => {
-  try {
-    const { text } = req.body;
+// ANALYZE ROUTE
+app.post("/api/analyze", (req, res) => {
+  const { text } = req.body;
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an AI interview coach. Analyze resumes and return strengths, skill gaps, and suggestions.",
-        },
-        {
-          role: "user",
-          content: text,
-        },
-      ],
-    });
-
-    res.json({
-      result: completion.choices[0].message.content,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "AI analysis failed" });
+  if (!text) {
+    return res.status(400).json({ error: "Resume text missing" });
   }
+
+  // Dummy AI response (industry demo)
+  res.json({
+    strengths: [
+      "Good knowledge in AWS",
+      "Hands-on Docker experience"
+    ],
+    gaps: [
+      "Deployment details missing",
+      "System design explanation needed"
+    ],
+    suggestions: [
+      "Add AWS project deployment steps",
+      "Mention scalability approaches"
+    ]
+  });
 });
 
 app.listen(5000, () => {
