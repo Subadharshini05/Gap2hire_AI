@@ -1,18 +1,20 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import cors from "cors";
 import resumeRoutes from "./routes/resumeRoutes.js";
-import interviewRoutes from "./routes/interviewRoutes.js";
 
 const app = express();
 
+// ✅ MUST
 app.use(cors());
 app.use(express.json());
 
+// ✅ Route mount (IMPORTANT)
 app.use("/api/resume", resumeRoutes);
-app.use("/api/interview", interviewRoutes);
+
+// Health check
+app.get("/", (req, res) => {
+  res.send("Gap2Hire backend running");
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {

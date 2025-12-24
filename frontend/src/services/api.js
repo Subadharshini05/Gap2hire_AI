@@ -1,9 +1,19 @@
-import axios from "axios";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import AnalyzePage from "./pages/AnalyzePage";
+import MockInterviewPage from "./pages/MockInterviewPage";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/analyze" element={<AnalyzePage />} />
+        <Route path="/mock-interview" element={<MockInterviewPage />} />
+      </Routes>
+    </Router>
+  );
+}
 
-export const analyzeResume = (resumeText) => {
-  return API.post("/resume/analyze", { resumeText });
-};
+export default App;

@@ -1,12 +1,14 @@
 import express from "express";
 import {
   evaluateSTAR,
-  generateQuestions
+  generateQuestions,
+  rewriteSTAR
 } from "../controllers/interviewController.js";
 
 const router = express.Router();
 
-router.post("/star-evaluate", evaluateSTAR);
 router.post("/generate-questions", generateQuestions);
+router.post("/star-evaluate", evaluateSTAR);
+router.post("/star-rewrite", rewriteSTAR);
 
 export default router;
