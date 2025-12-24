@@ -1,55 +1,66 @@
-import { useState } from "react";
-import { analyzeResume } from "../services/api";
+import React, { useState } from "react";
+import axios from "axios";
 
-function AnalyzePage({ goHome }) {
-  const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
+const AnalyzePage = () => {
+  const [resumeText, setResumeText] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleAnalyze = async () => {
-    try {
-      setLoading(true);
-      const res = await analyzeResume(text);
-      setResult(res.data);
-    } catch (err) {
-      alert("Backend error");
-    } finally {
-      setLoading(false);
-    }
+  const runAnalysis = async () => {
+    setLoading(true);
+    const res = await axios.post(
+      "http://localhost:5000/api/resume/analyze",
+      { resumeText }
+    );
+    setResult(res.data);
+    setLoading(false);
   };
 
   return (
-    <div className="card">
-      <h2>Resume Analysis</h2>
+    <div style={{ minHeight: "100vh", background: "#000", padding: "40px" }}>
+      <div style={{
+        background: "#fff",
+        maxWidth: "600px",
+        margin: "auto",
+        padding: "30px",
+        borderRadius: "10px"
+      }}>
+        <h2>Resume Analysis</h2>
 
-      <textarea
-        placeholder="Paste your resume here..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+        <textarea
+          rows="5"
+          style={{ width: "100%" }}
+          value={resumeText}
+          onChange={(e) => setResumeText(e.target.value)}
+          placeholder="Paste resume or skills (eg: aws, docker)"
+        />
 
-      <br />
+        <br /><br />
+        <button onClick={runAnalysis}>Run Analysis</button>
 
-      <button onClick={handleAnalyze}>
-        {loading ? "Analyzing..." : "Run Analysis"}
-      </button>
+        {loading && <p>Analyzing intelligently...</p>}
 
-      <button onClick={goHome}>Back to Home</button>
+        {result && (
+          <>
+            <h3>Strengths</h3>
+            <ul>
+              {result.strengths.map((s, i) => <li key={i}>{s}</li>)}
+            </ul>
 
-      {result && (
-        <div>
-          <h3>Strengths</h3>
-          <ul>{result.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
+            <h3>Skill Gaps</h3>
+            <ul>
+              {result.gaps.map((g, i) => <li key={i}>{g}</li>)}
+            </ul>
 
-          <h3>Skill Gaps</h3>
-          <ul>{result.gaps.map((g, i) => <li key={i}>{g}</li>)}</ul>
-
-          <h3>Suggestions</h3>
-          <ul>{result.suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>
-        </div>
-      )}
+            <h3>Suggestions</h3>
+            <ul>
+              {result.suggestions.map((s, i) => <li key={i}>{s}</li>)}
+            </ul>
+          </>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default AnalyzePage;

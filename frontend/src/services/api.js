@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "http://localhost:5000/api",
 });
 
-export const analyzeResume = (text) =>
-  API.post("/api/analyze", { text });
+export const analyzeResume = (resumeText) => {
+  return API.post("/resume/analyze", { resumeText });
+};

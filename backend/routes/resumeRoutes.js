@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import { analyzeResume } from "../controllers/resumeController.js";
+
 const router = express.Router();
-const { analyzeResume } = require("../controllers/resumeController");
 
 router.post("/analyze", analyzeResume);
 
-module.exports = router;
+export default router;
