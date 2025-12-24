@@ -1,16 +1,16 @@
-import { useState } from "react";
-import HomePage from "./pages/HomePage";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnalyzePage from "./pages/AnalyzePage";
-import "./App.css";
+import MockInterviewPage from "./pages/MockInterviewPage";
 
 function App() {
-  const [page, setPage] = useState("home");
-
   return (
-    <div className="container">
-      {page === "home" && <HomePage goToAnalyze={() => setPage("analyze")} />}
-      {page === "analyze" && <AnalyzePage goHome={() => setPage("home")} />}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<AnalyzePage />} />
+        <Route path="/mock-interview" element={<MockInterviewPage />} />
+      </Routes>
+    </Router>
   );
 }
 
